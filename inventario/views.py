@@ -7,10 +7,13 @@ from .workflows.engine import serialize_workflow, deserialize_workflow
 import base64
 from .models import Solicitud
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from functools import wraps
 
 ruta_bpmn = "/home/Mayte/gsolcam/inventario/workflows/bpmn/diagram_1.bpmn"
 id_proceso = "Process_0flhbkn"
 
+@login_required
 def crear_solicitud(request):
     if request.method == 'POST':
         form = SolicitudForm(request.POST)
@@ -26,12 +29,37 @@ def crear_solicitud(request):
             solicitud.workflow_json = base64.b64encode(workflow_bytes).decode('utf-8')
 
             solicitud.save()
-            return redirect('crear_solicitud')
+            return redirect('mis_solicitudes')
     else:
         form = SolicitudForm()
     return render(request, 'solicitudes/crear_solicitud.html', {'form': form})
 
+@login_required
+def mis_solicitudes(request):
+    # Obtiene las solicitudes del usuario que se haya logueado previamente
+    solicitudes = Solicitud.objects.filter(estudiante=request.user).order_by('-fecha_solicitud')
+
+    return render(request, 'solicitudes/mis_solicitudes.html', {
+        'solicitudes': solicitudes
+    })
+
+
+# ----------------------------
+# Decorador para coordinadores
+# ----------------------------
+def es_coordinador(user):
+    return user.is_authenticated and user.groups.filter(name="Coordinadores").exists()
+
+def requiere_ser_coordinador(view_func):
+    @wraps(view_func)
+    @login_required
+    @user_passes_test(es_coordinador)
+    def wrapper(request, *args, **kwargs):
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
 #Función que obtiene las solicitudes pendientes para el coordinador
+@requiere_ser_coordinador
 def solicitudes_pendientes(request):
     solicitudes = Solicitud.objects.filter(estado='pendiente')
 
@@ -49,14 +77,22 @@ def solicitudes_pendientes(request):
             'tareas': tareas
         })
 
-    return render(request, 'solicitudes/pendientes.html', {
+    return render(request, 'inventario/pendientes.html', {
         'solicitudes_con_tareas': solicitudes_con_tareas
     })
 
+
 #Función para completar las tareas por parte del coordinador
+@requiere_ser_coordinador
 def completar_tarea(request, solicitud_id, tarea_id):
     # Recupera la solicitud
     solicitud = get_object_or_404(Solicitud, id=solicitud_id)
+
+    # Valido que la solicitud tenga workflow
+    if not solicitud.workflow_json:
+        messages.error(request, "Error: esta solicitud no tiene workflow asociado.")
+        return redirect('solicitudes_pendientes')
+
 
     # Recupera el workflow desde base64
     workflow_bytes = base64.b64decode(solicitud.workflow_json)
@@ -94,11 +130,19 @@ def completar_tarea(request, solicitud_id, tarea_id):
         return redirect('solicitudes_pendientes')
 
     # Mostrar confirmación antes de completar
-    tarea = next(t for t in get_ready_user_tasks(workflow) if t.id == tarea_id)
+    tareas = [t for t in get_ready_user_tasks(workflow) if t.id == tarea_id]
+    if not tareas:
+        messages.error(request, "Tarea no encontrada.")
+        return redirect('solicitudes_pendientes')
+    tarea = tareas[0]
+
     return render(request, 'inventario/completar_tarea.html', {
         'solicitud': solicitud,
         'tarea': tarea
     })
+
+
+
 
 
 

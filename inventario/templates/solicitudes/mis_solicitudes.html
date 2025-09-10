@@ -1,0 +1,15 @@
+<h2>Mis solicitudes</h2>
+<ul>
+{% for s in solicitudes %}
+    <li>
+        {{ s.asignatura }} - {{ s.grupo }} → {{ s.grupo_deseado }} | Estado: {{ s.estado }}
+        {% if s.observaciones %}
+            | Observaciones: {{ s.observaciones }}
+        {% endif %}
+    </li>
+{% empty %}
+    <li>No tienes solicitudes.</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'crear_solicitud' %}">Crear nueva solicitud</a>

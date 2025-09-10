@@ -14,7 +14,6 @@ SECRET_KEY = 'django-insecure-##xbp@olx+kd=b)@vmt!pb@_)rbf#ef*w98t7ve+)i7cdrg&nu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['mayte.pythonanywhere.com']
 
 
@@ -121,6 +120,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración del servidor SMTP para envío de email al estudiante
 #SENDGRID_API_KEY = config("SENDGRID_API_KEY", default=None)
+
+LOGIN_URL = '/solicitudes/login/'
+LOGIN_REDIRECT_URL = '/solicitudes/mis_solicitudes/'  # Indica dónde ir después de login
+LOGOUT_REDIRECT_URL = '/solicitudes/login/'           # Indica dónde ir después del logout
+
+
 
 
 
