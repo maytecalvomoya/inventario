@@ -1,0 +1,20 @@
+<h2>Tarea: {{ tarea.task_spec.name }}</h2>
+
+<p>Estudiante: {{ solicitud.estudiante.username }}</p>
+<p>Asignatura: {{ solicitud.asignatura }}</p>
+
+<!--
+<p><strong>Estudiante:</strong> {{ solicitud.estudiante.nombre }}</p>
+<p><strong>Grupo solicitado:</strong> {{ solicitud.grupo_solicitado }}</p>
+<p><strong>Turno solicitado:</strong> {{ solicitud.turno_solicitado }}</p>
+-->
+
+<form method="post">
+    {% csrf_token %}
+    <label>Observaciones:</label>
+    <textarea name="observaciones"></textarea>
+    <br>
+    <button name="aprobado" value="true" type="submit">✅ Aprobar</button>
+    <button name="aprobado" value="false" type="submit">❌ Rechazar</button>
+</form>
+

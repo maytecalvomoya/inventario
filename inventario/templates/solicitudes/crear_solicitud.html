@@ -1,0 +1,33 @@
+<!--
+from django.shortcuts import render, redirect
+from .forms import SolicitudForm
+
+def crear_solicitud(request):
+    if request.method == 'POST':
+        form = SolicitudForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('crear_solicitud')
+    else:
+        form = SolicitudForm()
+    return render(request, 'inventario/crear_solicitud.html', {'form': form})
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Solicitud</title>
+</head>
+<body>
+    <h1>Crear Solicitud</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>
+
+

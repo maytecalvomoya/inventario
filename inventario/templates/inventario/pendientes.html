@@ -1,0 +1,9 @@
+{% for item in solicitudes_con_tareas %}
+  <h3>Solicitud de {{ item.solicitud.estudiante.username }}</h3>
+  <p>Asignatura: {{ item.solicitud.asignatura }}</p>
+  <ul>
+    {% for tarea in item.tareas %}
+      <li>{{ tarea.task_spec.name }} - ID: {{ tarea.id }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
