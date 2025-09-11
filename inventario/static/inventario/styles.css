@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+form {
+    width: 300px; /*limita el ancho del input de contraseña y también del usuario*/
+    margin: 50px auto;
+    padding: 20px; /*Lo hace más cómodo de usar*/
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-botton: 10px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    height: 40px;
+    margin-botton: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /*Evita que el padding haga que el input sea más ancho de lo esperado*/
+    flex-direction: column;
+    align-items: center; /*Centra el formulario y los inputs verticamente*/
+}
+
+button[type="submit"] {
+    width: 100%;
+    height: 40px;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #3e8e41;
+}
+
+h2 {
+    text-align: center;
+}

@@ -7,11 +7,26 @@ from .workflows.engine import serialize_workflow, deserialize_workflow
 import base64
 from .models import Solicitud
 from django.contrib import messages
+#from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from functools import wraps
+from .forms import LoginForm
 
 ruta_bpmn = "/home/Mayte/gsolcam/inventario/workflows/bpmn/diagram_1.bpmn"
 id_proceso = "Process_0flhbkn"
+
+
+def login_view(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)  # pasa request al form
+        if form.is_valid():
+            user = form.get_user()  # obtiene el usuario autenticado
+            login(request, user)     # inicia sesión
+            return redirect('crear_solicitud')  # redirige tras login
+    else:
+        form = LoginForm()
+    return render(request, "login.html", {"form": form})
 
 @login_required
 def crear_solicitud(request):
@@ -81,7 +96,6 @@ def solicitudes_pendientes(request):
         'solicitudes_con_tareas': solicitudes_con_tareas
     })
 
-
 #Función para completar las tareas por parte del coordinador
 @requiere_ser_coordinador
 def completar_tarea(request, solicitud_id, tarea_id):
@@ -92,7 +106,6 @@ def completar_tarea(request, solicitud_id, tarea_id):
     if not solicitud.workflow_json:
         messages.error(request, "Error: esta solicitud no tiene workflow asociado.")
         return redirect('solicitudes_pendientes')
-
 
     # Recupera el workflow desde base64
     workflow_bytes = base64.b64decode(solicitud.workflow_json)
@@ -114,32 +127,23 @@ def completar_tarea(request, solicitud_id, tarea_id):
         solicitud.workflow_json = base64.b64encode(serialize_workflow(workflow)).decode('utf-8')
 
         # Actualiza el estado final si el workflow terminó
-        #if workflow.is_complete():
-        #    solicitud.estado = 'aprobado' if workflow.data.get('aprobado_coordinador', False) else 'rechazado'
-
-        if workflow.is_complete():
+        #if workflow.is_done():
+        #    solicitud.estado = 'aprobado' if aprobado else 'rechazado'
+        if not get_ready_user_tasks(workflow):
             solicitud.estado = 'aprobado' if aprobado else 'rechazado'
 
 
+
         solicitud.save()
-        #estado_texto = "aprobada" if solicitud.estado == "aprobado" else "rechazada"
 
-        #Se envía email al estudiante
-        #enviar_correo("mayte.calvo.moya@gmail.com", "Este es el asunto", "Este es el cuerpo del mensaje")
+        # Mensaje de éxito para mostrar en la misma página
+        messages.success(
+            request,
+            f"Tarea '{tarea_id}' de la solicitud de {solicitud.estudiante.get_full_name() or solicitud.estudiante.username} completada."
+        )
 
-        return redirect('solicitudes_pendientes')
-
-    # Mostrar confirmación antes de completar
-    tareas = [t for t in get_ready_user_tasks(workflow) if t.id == tarea_id]
-    if not tareas:
-        messages.error(request, "Tarea no encontrada.")
-        return redirect('solicitudes_pendientes')
-    tarea = tareas[0]
-
-    return render(request, 'inventario/completar_tarea.html', {
-        'solicitud': solicitud,
-        'tarea': tarea
-    })
+    # Siempre redirige a la página de pendientes (inline)
+    return redirect('solicitudes_pendientes')
 
 
 

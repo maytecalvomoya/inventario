@@ -1,13 +1,6 @@
 from django.urls import path
 from . import views
-# from .views import crear_solicitud
-
-'''
-urlpatterns = [
-    path('nueva_solicitud/', crear_solicitud, name='crear_solicitud'),
-    #path('ajax/load-titulaciones/', views.load_titulaciones, name='ajax_load_titulaciones'),
-]
-'''
+#from uuid import UUID
 
 urlpatterns = [
     # Estudiantes
@@ -16,5 +9,10 @@ urlpatterns = [
 
     # Coordinadores
     path('coordinador/pendientes/', views.solicitudes_pendientes, name='solicitudes_pendientes'),
-    path('coordinador/completar/<int:solicitud_id>/<int:tarea_id>/', views.completar_tarea, name='completar_tarea'),
+    path('coordinador/completar/<int:solicitud_id>/<uuid:tarea_id>/', views.completar_tarea, name='completar_tarea')
 ]
+
+
+
+
+

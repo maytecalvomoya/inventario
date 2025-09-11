@@ -1,6 +1,12 @@
 from django import forms
 from .models import Solicitud
 
+from django.contrib.auth.forms import AuthenticationForm
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label="Usuario")
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
+
 #Formulario para que el estudiante pueda cumplimentar los datos de la solicitud
 class SolicitudForm(forms.ModelForm):
     class Meta:

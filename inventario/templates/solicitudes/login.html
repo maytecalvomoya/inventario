@@ -1,6 +1,18 @@
-<h2>Login</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Entrar</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!-- Cargo el link de estilos -->
+    <link rel="stylesheet" href="{% static 'inventario/styles.css' %}">
+</head>
+<body>
+    <h2>Introducción de datos</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Acceder</button>
+    </form>
+</body>
+</html>

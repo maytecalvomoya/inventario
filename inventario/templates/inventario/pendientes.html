@@ -1,3 +1,4 @@
+<!--
 {% for item in solicitudes_con_tareas %}
   <h3>Solicitud de {{ item.solicitud.estudiante.username }}</h3>
   <p>Asignatura: {{ item.solicitud.asignatura }}</p>
@@ -7,4 +8,44 @@
     {% endfor %}
   </ul>
 {% endfor %}
+-->
+
+<h2>Solicitudes pendientes</h2>
+
+{% if solicitudes_con_tareas %}
+    {% for s in solicitudes_con_tareas %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+            <h3>Solicitud de {{ s.solicitud.estudiante.username }}</h3>
+            <p><strong>Asignatura:</strong> {{ s.solicitud.asignatura }}</p>
+            <p><strong>Grupo actual:</strong> {{ s.solicitud.grupo }} | <strong>Turno actual:</strong> {{ s.solicitud.turno }}</p>
+            <p><strong>Grupo deseado:</strong> {{ s.solicitud.grupo_deseado }} | <strong>Turno deseado:</strong> {{ s.solicitud.turno_deseado }}</p>
+
+            <h4>Tareas pendientes:</h4>
+            {% if s.tareas %}
+                <ul>
+                    {% for t in s.tareas %}
+                        <li>
+                            <strong>{{ t.name }}</strong> - ID: {{ t.id }}
+                            <form method="post" action="{% url 'completar_tarea' s.solicitud.id t.id %}" style="display:inline-block; margin-left:10px;">
+                                {% csrf_token %}
+                                <label>
+                                    <input type="radio" name="aprobado" value="true" required> Aprobar
+                                </label>
+                                <label>
+                                    <input type="radio" name="aprobado" value="false" required> Rechazar
+                                </label>
+                                <input type="text" name="observaciones" placeholder="Observaciones..." size="30">
+                                <button type="submit">Completar</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay tareas pendientes para esta solicitud.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No hay solicitudes pendientes.</p>
+{% endif %}
 
