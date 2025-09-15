@@ -14,19 +14,39 @@ form {
 
 label {
     display: block;
-    margin-botton: 10px;
+    margin-bottom: 10px;
 }
 
+/*
 input[type="text"], input[type="password"] {
     width: 100%;
     height: 40px;
-    margin-botton: 20px;
+    margin-bottom: 30px;
     padding: 10px;
     border: 1px solid #ccc;
     box-sizing: border-box; /*Evita que el padding haga que el input sea más ancho de lo esperado*/
     flex-direction: column;
     align-items: center; /*Centra el formulario y los inputs verticamente*/
+}*/
+
+input[type="text"] {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 10px; /* menos espacio debajo del usuario */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /*Evita que el padding haga que el input sea más ancho de lo esperado*/
 }
+
+input[type="password"] {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 30px; /* espacio normal debajo de la contraseña */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
 
 button[type="submit"] {
     width: 100%;
@@ -43,6 +63,6 @@ button[type="submit"]:hover {
     background-color: #3e8e41;
 }
 
-h2 {
+h5 {
     text-align: center;
 }

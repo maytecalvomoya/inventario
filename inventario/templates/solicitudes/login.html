@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="{% static 'inventario/styles.css' %}">
 </head>
 <body>
-    <h2>Introducción de datos</h2>
     <form method="post">
+        <h5>Introduzca sus datos de inicio de sesión</h5>
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Acceder</button>
