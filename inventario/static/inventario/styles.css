@@ -24,10 +24,12 @@ input[type="text"], input[type="password"] {
     margin-bottom: 30px;
     padding: 10px;
     border: 1px solid #ccc;
-    box-sizing: border-box; /*Evita que el padding haga que el input sea más ancho de lo esperado*/
+    box-sizing: border-box;
     flex-direction: column;
-    align-items: center; /*Centra el formulario y los inputs verticamente*/
-}*/
+    align-items: center;
+}
+*/
+
 
 input[type="text"] {
     width: 100%;
